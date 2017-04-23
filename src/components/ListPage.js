@@ -16,7 +16,7 @@ class ListPage extends React.Component {
     return (
       <div className='w-100 flex justify-center'>
         <div className='w-100' style={{ maxWidth: 400 }}>
-          {this.props.data.allPosts.map((post) =>
+          {this.props.data.findAllRecipes.map((post) =>
             <Post key={post.id} post={post} />
           )}
         </div>
@@ -26,10 +26,9 @@ class ListPage extends React.Component {
 }
 
 const FeedQuery = gql`query {
-  allPosts(orderBy: createdAt_DESC) {
+  findAllRecipes {
     id
-    imageUrl
-    description
+    label
   }
 }`
 

@@ -73,7 +73,7 @@ const createPost = gql`
 const userQuery = gql`
   query {
     user {
-      id
+      userId
     }
   }
 `

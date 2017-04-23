@@ -9,6 +9,7 @@ export default class Post extends React.Component {
   render () {
     return (
       <div className='pa3 bg-black-05 ma3'>
+        <div>
         <div
           className='w-100'
           style={{
@@ -17,8 +18,12 @@ export default class Post extends React.Component {
             paddingBottom: '100%',
           }}
         />
+        <div>
+          Things
+        </div>
+        </div>
         <div className='pt3'>
-          {this.props.post.description}&nbsp;
+          {this.props.post.label}&nbsp;
         </div>
       </div>
     )

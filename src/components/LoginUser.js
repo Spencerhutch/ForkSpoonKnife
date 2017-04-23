@@ -27,6 +27,10 @@ class CreateLogin extends React.Component {
       this.props.router.replace('/')
     }
 
+    if (this.props.data.error) {
+      console.log('ERROR: ', this.props.error)
+    }
+
     return (
       <div className='w-100 pa4 flex justify-center'>
         <div style={{ maxWidth: 400 }} className=''>
@@ -57,19 +61,20 @@ class CreateLogin extends React.Component {
 
     this.props.signinUser({variables: {email, password}})
       .then((response) => {
-        window.localStorage.setItem('graphcoolToken', response.data.signinUser.token)
+        window.localStorage.setItem('graphcoolToken', response.data.signinUser.accessToken)
         this.props.router.replace('/')
       }).catch((e) => {
         console.error(e)
-        this.props.router.replace('/')
+
+        // this.props.router.replace('/')
       })
   }
 }
 
 const signinUser = gql`
-  mutation ($email: String!, $password: String!) { 
-    signinUser(email: {email: $email, password: $password}) {
-      token
+  mutation ($email: String!, $password: String!) {
+    signinUser(email: $email, password: $password) {
+      accessToken
     }
   }
 `
@@ -77,7 +82,7 @@ const signinUser = gql`
 const userQuery = gql`
   query {
     user {
-      id
+      userId
     }
   }
 `

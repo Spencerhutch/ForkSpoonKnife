@@ -9,7 +9,12 @@ import ApolloClient, { createNetworkInterface } from 'apollo-client'
 import { ApolloProvider } from 'react-apollo'
 import 'tachyons'
 
-const networkInterface = createNetworkInterface({ uri: 'https://api.graph.cool/simple/v1/__PROJECT_ID_' })
+const networkInterface = createNetworkInterface({
+  uri: 'http://localhost:3004/',
+  opts: {
+    // Additional fetch options like `credentials` or `headers`
+    credentials: 'same-origin',
+  } })
 
 networkInterface.use([{
   applyMiddleware (req, next) {
@@ -19,7 +24,7 @@ networkInterface.use([{
 
     // get the authentication token from local storage if it exists
     if (localStorage.getItem('graphcoolToken')) {
-      req.options.headers.authorization = `Bearer ${localStorage.getItem('graphcoolToken')}`
+      req.options.headers.authorization = `${localStorage.getItem('graphcoolToken')}`
     }
     next()
   },

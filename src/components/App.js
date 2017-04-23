@@ -4,6 +4,7 @@ import { withRouter } from 'react-router'
 import gql from 'graphql-tag'
 import ListPage from './ListPage'
 import NewPostLink from './NewPostLink'
+import { AppBar } from 'react-toolbox/lib/app_bar';
 
 class App extends React.Component {
   static propTypes = {
@@ -44,6 +45,8 @@ class App extends React.Component {
   renderLoggedIn() {
     return (
       <div>
+        {/*<AppBar  title='React Toolbox' leftIcon='menu' />*/}
+
         <span>
           Logged in as {this.props.data.user.name}
         </span>
@@ -92,8 +95,8 @@ class App extends React.Component {
 const userQuery = gql`
   query {
     user {
-      id
-      name
+      userId
+      email
     }
   }
 `

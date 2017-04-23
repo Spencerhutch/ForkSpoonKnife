@@ -111,7 +111,7 @@ const signinUser = gql`
 const userQuery = gql`
   query {
     user {
-      id
+      userId
     }
   }
 `
