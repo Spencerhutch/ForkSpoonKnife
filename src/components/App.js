@@ -4,7 +4,8 @@ import { withRouter } from 'react-router'
 import gql from 'graphql-tag'
 import ListPage from './ListPage'
 import NewPostLink from './NewPostLink'
-import { AppBar } from 'react-toolbox/lib/app_bar';
+import { Button } from 'semantic-ui-react'
+import '../../semantic/dist/semantic.min.css';
 
 class App extends React.Component {
   static propTypes = {
@@ -45,18 +46,13 @@ class App extends React.Component {
   renderLoggedIn() {
     return (
       <div>
-        {/*<AppBar  title='React Toolbox' leftIcon='menu' />*/}
-
         <span>
           Logged in as {this.props.data.user.name}
         </span>
         <div className='pv3'>
-          <span
-            className='dib bg-red white pa3 pointer dim'
-            onClick={this._logout}
-          >
+          <Button negative='true' size='large' onClick={this._logout}>
             Logout
-          </span>
+          </Button>
         </div>
         <ListPage />
         <NewPostLink />
