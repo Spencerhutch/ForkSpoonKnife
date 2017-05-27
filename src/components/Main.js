@@ -5,11 +5,10 @@ import gql from 'graphql-tag'
 import ListPage from './ListPage'
 import NewPostLink from './NewPostLink'
 import { Button } from 'semantic-ui-react'
-import '../../semantic/dist/semantic.min.css';
+import '../../semantic/dist/semantic.min.css'
 
-import NavBar from './NavBar'
 
-class App extends React.Component {
+class Main extends React.Component {
   static propTypes = {
     router: React.PropTypes.object.isRequired,
     data: React.PropTypes.object.isRequired,
@@ -29,15 +28,6 @@ class App extends React.Component {
     this.props.router.push('/signup')
   }
 
-  _newRecipe = () => {
-    this.props.router.push('/create')
-  }
-
-  _showRecipe = (id) => {
-    // console.log('Show: ', id)
-    this.props.router.push('/recipe/'+id)
-  }
-
   _isLoggedIn = () => {
     return this.props.data.user
   }
@@ -54,11 +44,20 @@ class App extends React.Component {
     }
   }
 
+
   renderLoggedIn() {
     return (
       <div>
-        <NavBar logout={this._logout} newRecipe={this._newRecipe}/>
-        <ListPage showRecipe={this._showRecipe}/>
+        <span>
+          Logged in as {this.props.data.user.name}
+        </span>
+        <div className='pv3'>
+          <Button negative='true' size='large' onClick={this._logout}>
+            Logout
+          </Button>
+        </div>
+        <ListPage />
+        <NewPostLink />
       </div>
     )
   }
@@ -66,8 +65,26 @@ class App extends React.Component {
   renderLoggedOut() {
     return (
       <div>
-        <NavBar login={this._showLogin} signup={this._showSignup} newRecipe={this._newRecipe}/>
-        <ListPage showRecipe={this._showRecipe}/>
+        <div className='pv3'>
+          <div>
+            <span
+              onClick={this._showLogin}
+              className='dib pa3 white bg-blue dim pointer'
+            >
+              Log in with Email
+            </span>
+          </div>
+          <span>Log in to create new posts</span>
+          <div>
+            <span
+              onClick={this._showSignup}
+              className='dib pa3 white bg-blue dim pointer'
+            >
+              Sign up with Email
+            </span>
+          </div>
+        </div>
+        <ListPage />
       </div>
     )
   }
@@ -82,4 +99,4 @@ const userQuery = gql`
   }
 `
 
-export default graphql(userQuery, { options: {forceFetch: true }})(withRouter(App))
+export default graphql(userQuery, { options: {forceFetch: true }})(withRouter(Main))

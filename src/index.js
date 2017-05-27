@@ -1,9 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './components/App'
-import CreatePost from './components/CreatePost'
+import CreateRecipe from './components/CreateRecipe'
 import CreateUser from './components/CreateUser'
 import LoginUser from './components/LoginUser'
+import Recipe from './components/Recipe'
 import { Router, Route, browserHistory } from 'react-router'
 import ApolloClient, { createNetworkInterface } from 'apollo-client'
 import { ApolloProvider } from 'react-apollo'
@@ -36,9 +37,10 @@ ReactDOM.render((
   <ApolloProvider client={client}>
     <Router history={browserHistory}>
       <Route path='/' component={App} />
-      <Route path='create' component={CreatePost} />
+      <Route path='create' component={CreateRecipe} />
       <Route path='login' component={LoginUser} />
       <Route path='signup' component={CreateUser} />
+      <Route path='recipe/:recipeId' component={Recipe} />
     </Router>
   </ApolloProvider>
   ),
