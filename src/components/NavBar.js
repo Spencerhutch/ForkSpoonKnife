@@ -45,7 +45,6 @@ class NavBar extends React.Component {
       </Dropdown>
     }
 
-
     return (
       <div>
         <Menu>

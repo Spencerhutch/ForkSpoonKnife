@@ -19,6 +19,8 @@ class Recipe extends React.Component {
   render() {
     const recipe = this.props.data.findRecipeById;
     if (recipe) {
+      const ingredients = recipe.ingredients;
+      const steps = recipe.steps;
       return (
         <div className='w-100 flex justify-center'>
           <div className='w-100' style={{ maxWidth: 90+'%' }}>
@@ -29,44 +31,26 @@ class Recipe extends React.Component {
                 <Item.Content>
                   <Item.Header as='a'><h1>{recipe.label}</h1></Item.Header>
                   <Item.Meta>
-                    <span className='cinema'>Prep Time: <b>15</b></span>
+                    <span className='cinema'>Prep Time: <b>{recipe.prepTime}</b></span>
                   </Item.Meta>
                   <Item.Meta>
-                    <span className='cinema'>Cook Time: <b>20</b></span>
+                    <span className='cinema'>Cook Time: <b>{recipe.cookTime}</b></span>
                   </Item.Meta>
                   <Item.Meta>
-                    <span className='cinema'>Servings: <b>6</b></span>
+                    <span className='cinema'>Servings: <b>{recipe.servings}</b></span>
                   </Item.Meta>
                   <hr/>
-                  <Item.Description><h2>Ingredients</h2></Item.Description>
 
-                  <Item.Description>2 large gala apples</Item.Description>
-                  <Item.Description>4 tablespoons butter</Item.Description>
-                  <Item.Description>2 teaspoons cinnamon</Item.Description>
-                  <Item.Description>½ teaspoon nutmeg</Item.Description>
-                  <Item.Description>¼ cup brown sugar</Item.Description>
-                  <Item.Description>4 eggs</Item.Description>
-                  <Item.Description>1 cup milk</Item.Description>
-                  <Item.Description>1 teaspoon vanilla</Item.Description>
-                  <Item.Description>Powdered sugar for dusting</Item.Description>
+                  <Item.Description><h2>Ingredients</h2></Item.Description>
+                  {ingredients.map((i) =>
+                    <Item.Description key={i.id}>{i.label}</Item.Description>
+                  )}
 
                   <hr/>
                   <Item.Description><h2>Instructions</h2></Item.Description>
-                  <Item.Description>
-                    1. Preheat oven to 450. Peel, core and thinly slice apples. Melt butter in 10 inch frying pan (that can be transferred into oven). Cast iron is optimal. Add in cinnamon, nutmeg, brown sugar. Once melted, add in apples and cook until apples are softened, about five minutes. Place pan in oven while making batter.
-                  </Item.Description>
-                  <Item.Description>
-                    2. Mix eggs with flour until smooth. Add in milk and vanilla.
-                  </Item.Description>
-                  <Item.Description>
-                    3. Pour batter over apple mixture.
-                  </Item.Description>
-                  <Item.Description>
-                    4. Bake for 15-20 minutes until golden brown. Dust with confectioner's sugar. Cut into wedges
-                  </Item.Description>
-                  <Item.Description>
-                    5. Note: If you don't have a frying pan that will go in oven, fry apples on top of stove and pour into a round cake pan, add batter and bake.
-                  </Item.Description>
+                  {steps.map((s, idx) =>
+                    <Item.Description key={s.id}>{++idx}: {s.text}</Item.Description>
+                  )}
 
                   <Item.Extra>
                     <Label>IMAX</Label>
@@ -89,7 +73,18 @@ const getRecipe = gql`
     findRecipeById(id:$id) {
       id
       label
+      prepTime
+      cookTime
+      servings
       headerPhotoUrl
+      ingredients {
+        id
+        label
+      }
+      steps {
+        id
+        text
+      }
     }
   }`
 

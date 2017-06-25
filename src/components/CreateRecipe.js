@@ -2,12 +2,18 @@ import React from 'react'
 import { withRouter } from 'react-router'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Image, Grid, Input, Header, Dropdown, Icon, Search } from 'semantic-ui-react'
+import { Image, Grid, Input, Header, Dropdown, Icon, Search, Button } from 'semantic-ui-react'
 
-import CreateReciepIngredients from '../components/CreateRecipeIngredients'
+import InputOrTextAreaWithAdd from '../components/InputOrTextAreaWithAdd'
+
+import DragSortableList from 'react-drag-sortable'
 
 class CreatePost extends React.Component {
-
+  constructor(props) {
+    super(props);
+    this.addIngredient = this.addIngredient.bind(this);
+    this.addStep = this.addStep.bind(this);
+  }
   static propTypes = {
     router: React.PropTypes.object,
     mutate: React.PropTypes.func,
@@ -17,10 +23,23 @@ class CreatePost extends React.Component {
   state = {
     title: '',
     sourceUrl: '',
-    photoUrl: ''
+    photoUrl: '',
+    prepTime: null,
+    cookTime: null,
+    servings: null,
+    ingredients: [],
+    steps: []
   }
 
+  addIngredient(item) {
+    const existing = this.state.ingredients;
+    this.setState({ingredients: [...existing, {content: item}]})
+  }
 
+  addStep(item) {
+    const existing = this.state.steps;
+    this.setState({steps: [...existing, {content: item}]})
+  }
 
   render () {
     if (this.props.data.loading) {
@@ -37,7 +56,7 @@ class CreatePost extends React.Component {
 
     // redirect if no user is logged in
     // if (!this.props.data.user) {
-    //   console.warn('only logged in users can create new posts')
+    //   console.warn('only logged in users can create new recipes')
     //   this.props.router.replace('/')
     // }
 
@@ -76,13 +95,23 @@ class CreatePost extends React.Component {
                 <Grid>
                   <Grid.Row>
                     <Grid.Column width={5}>
-                      <Input placeholder='Prep Time:' />
+                      <Input
+                        value={this.state.prepTime}
+                        placeholder='Prep Time:'
+                        onChange={(e) => this.setState({prepTime: e.target.value})}
+                      />
                     </Grid.Column>
                     <Grid.Column width={5}>
-                      <Input placeholder='Cook Time:' />
+                      <Input
+                        value={this.state.cookTime}
+                        placeholder='Cook Time:'
+                        onChange={(e) => this.setState({cookTime: e.target.value})}/>
                     </Grid.Column>
                     <Grid.Column width={5}>
-                      <Input placeholder='Servings:' />
+                      <Input
+                        value={this.state.servings}
+                        placeholder='Servings:'
+                        onChange={(e) => this.setState({servings: e.target.value})}/>
                     </Grid.Column>
                   </Grid.Row>
                 </Grid>
@@ -96,63 +125,43 @@ class CreatePost extends React.Component {
           </Grid.Column>
         </Grid.Row>
         <Grid.Row textAlign='center'>
-          <Grid.Column>
-            <CreateReciepIngredients />
-            {/*<Header as='h1'>Ingredients</Header>
-
-            <div>
-              <Input
-                label={<Dropdown defaultValue='.com' options={options} />}
-                labelPosition='right'
-                placeholder='Find domain'
-              />
-              <Input loading icon='user' placeholder='Search...' />
-            </div>
-
-            <Icon name='plus' circular link size='big' />*/}
+          <Grid.Column width={7}>
+            <Header as='h1'>Ingredients</Header>
+            <DragSortableList items={this.state.ingredients}  type="vertical"/>
+            <InputOrTextAreaWithAdd addItem={this.addIngredient} placeholder='1/3 cup Sugar'/>
           </Grid.Column>
+          <Grid.Column width={7}>
+            <Header as='h1'>Steps</Header>
+            <DragSortableList items={this.state.steps}  type="vertical"/>
+            <InputOrTextAreaWithAdd textArea={true} addItem={this.addStep} placeholder='Mix the dry ingredients'/>
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row centered={true}>
+          <Button type='submit' onClick={this.handlePost}>Add Recipe</Button>
         </Grid.Row>
       </Grid>
     )
-    /*
-    return (
-      <div className='w-100 pa4 flex justify-center'>
-        <div style={{ maxWidth: 400 }} className=''>
-          <input
-            className='w-100 pa3 mv2'
-            value={this.state.title}
-            placeholder='Title'
-            onChange={(e) => this.setState({title: e.target.value})}
-          />
-          <input
-            className='w-100 pa3 mv2'
-            value={this.state.sourceUrl}
-            placeholder='Source Url'
-            onChange={(e) => this.setState({sourceUrl: e.target.value})}
-          />
-
-          <input
-            className='w-100 pa3 mv2'
-            value={this.state.photoUrl}
-            placeholder='Header Photo Url'
-            onChange={(e) => this.setState({photoUrl: e.target.value})}
-          />
-          {this.state.photoUrl &&
-            <img src={this.state.photoUrl} role='presentation' className='w-100 mv3' />
-          }
-          {this.state.title && this.state.sourceUrl &&
-            <button className='pa3 bg-black-10 bn dim ttu pointer' onClick={this.handlePost}>Post</button>
-          }
-        </div>
-      </div>
-    )
-    */
   }
 
   handlePost = () => {
-    const {title, sourceUrl, photoUrl} = this.state
-    console.log('PHOTO: ', photoUrl)
-    this.props.mutate({variables: {title, sourceUrl, photoUrl}})
+    const {title, sourceUrl, photoUrl, prepTime, cookTime, servings, steps, ingredients} = this.state
+
+    const writableSteps = steps.map((s) => {
+      return {
+        text: s.content,
+        position: s.rank
+      }
+    })
+
+    const writableIngredients = ingredients.map((s) => {
+      return {
+        label: s.content
+      }
+    })
+
+    const variables = {title, sourceUrl, photoUrl, prepTime, cookTime,
+      servings, steps: writableSteps, ingredients: writableIngredients}
+    this.props.mutate({variables})
       .then(() => {
         this.props.router.replace('/')
       })
@@ -160,10 +169,28 @@ class CreatePost extends React.Component {
 }
 
 const createPost = gql`
-  mutation ($title: String!, $sourceUrl: String!, $photoUrl: String) {
-    createRecipe(label: $title, sourceURL: $sourceUrl, prepTime: 5, cookTime: 5, servings: 6, headerPhotoURL: $photoUrl) {
-      id
-    }
+  mutation (
+    $title: String!,
+    $sourceUrl: String!,
+    $photoUrl: String,
+    $prepTime: Int!,
+    $cookTime: Int!,
+    $servings: Int!,
+    $steps: [RecipeStepInput]
+    $ingredients: [RecipeIngredientInput]
+    ) {
+      createRecipe(
+        label: $title,
+        sourceURL: $sourceUrl,
+        prepTime: $prepTime,
+        cookTime: $cookTime,
+        servings: $servings,
+        headerPhotoURL: $photoUrl
+        steps: $steps
+        ingredients: $ingredients
+      ) {
+        id
+      }
   }
 `
 

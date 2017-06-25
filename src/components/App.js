@@ -58,7 +58,7 @@ class App extends React.Component {
     return (
       <div>
         <NavBar logout={this._logout} newRecipe={this._newRecipe}/>
-        <ListPage showRecipe={this._showRecipe}/>
+        <ListPage showRecipe={this._showRecipe} />
       </div>
     )
   }
@@ -67,7 +67,7 @@ class App extends React.Component {
     return (
       <div>
         <NavBar login={this._showLogin} signup={this._showSignup} newRecipe={this._newRecipe}/>
-        <ListPage showRecipe={this._showRecipe}/>
+        <ListPage showRecipe={this._showRecipe} />
       </div>
     )
   }

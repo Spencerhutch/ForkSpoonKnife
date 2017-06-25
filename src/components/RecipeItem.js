@@ -9,12 +9,13 @@ export default class Post extends React.Component {
   }
 
   render () {
+    const recipe = this.props.post;
     return (
       <Card fluid={true} onClick={() => this.props.show(this.props.post.id)}>
         <Grid columns={2} divided>
           <Grid.Row>
             <Grid.Column width={4}>
-              <Image floated='left' src={this.props.post.headerPhotoUrl} />
+              <Image centered='true' src={this.props.post.headerPhotoUrl} height='200px'/>
             </Grid.Column>
             <Grid.Column>
               <Card.Content>
@@ -23,10 +24,10 @@ export default class Post extends React.Component {
                   <Grid columns={4} divided>
                     <Grid.Row>
                       <Grid.Column>
-                        Prep Time: 15 Min
+                        Prep Time: {recipe.prepTime} Min
                       </Grid.Column>
                       <Grid.Column>
-                        Cook Time: 45 Min
+                        Cook Time: {recipe.cookTime} Min
                       </Grid.Column>
                       <Grid.Column>
                         Total Time: 1 Hour
@@ -34,7 +35,7 @@ export default class Post extends React.Component {
                     </Grid.Row>
                   </Grid>
                 </Card.Meta>
-                <Card.Description>Daniel is a comedian living in Nashville.</Card.Description>
+                {/*<Card.Description>Daniel is a comedian living in Nashville.</Card.Description>*/}
               </Card.Content>
               <Card.Content extra>
                 <Rating icon='star' defaultRating={3} maxRating={5} />
