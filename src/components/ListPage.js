@@ -2,6 +2,7 @@ import React from 'react'
 import Post from '../components/RecipeItem'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
+import { Input } from 'semantic-ui-react'
 
 
 import fuzzyFilterFactory from 'react-fuzzy-filter';
@@ -30,8 +31,10 @@ class ListPage extends React.Component {
       <div className='w-100 flex justify-center'>
         <div className='w-100' style={{ maxWidth: 90+'%' }}>
           <div>
-            <InputFilter debounceTime={0} onChange={(e) =>
-                this.setState({filter: e})}/>
+            <Input >
+              <InputFilter debounceTime={0} onChange={(e) =>
+                  this.setState({filter: e})} icon='search' placeholder='Search...'/>
+            </Input>
           </div>
           <FilterResults
             items={items}
